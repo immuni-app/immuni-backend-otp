@@ -1,0 +1,9 @@
+**/__pycache__
+**/.coverage
+/.idea
+/.mypy_cache
+/.vault.json
+/coverage-reports
+/immuni_otp.egg-info
+/test-reports/junit.xml
+.venv/

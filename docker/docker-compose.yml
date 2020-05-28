@@ -1,0 +1,21 @@
+version: '3.4'
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: ./common/Dockerfile
+      args:
+        API_PORT: 5000
+        SERVICE_DIR: immuni_otp
+      target: api
+    ports:
+      - "5000:5000"
+    environment:
+      ENV: development
+      OTP_CACHE_REDIS_URL: "redis://redis:6379/0"
+    depends_on:
+      - redis
+  redis:
+    image: redis:5.0.9-alpine
+    ports:
+      - "6379:6379"

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "immuni-otp"
+version = "1.0.0"
+description = """
+It provides an API to the healthcare system for receiving authorized OTP codes that can be used to
+upload data from the Mobile Client.
+"""
+authors = []
+
+[tool.poetry.dependencies]
+immuni-common = { path = "common", develop = true, extras = ["aioredis"] }
+python = "^3.8"
+
+[tool.poetry.dev-dependencies]
+immuni-common-dev = { path = "common/dev", develop = true }
+
+[tool.poetry.scripts]
+checks = "common.scripts:checks"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
