@@ -69,10 +69,8 @@ This repository contains the source code of Immuni's OTP Service. More detailed 
 This backend service comes with an out-of-the-box installation, leveraging [Docker](https://www.docker.com/) containers. Please ensure that Docker is installed on your computer.
 
 ```bash
-git clone git@github.com:immuni-app/immuni-backend-otp.git
-cd immuni-backend-otp
-git submodule update --init
-cd docker
+git clone --recurse-submodules git@github.com:immuni-app/immuni-backend-otp.git
+cd immuni-backend-otp/docker
 docker-compose build \
     --build-arg GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD) \
     --build-arg GIT_SHA=$(git rev-parse --verify HEAD) \
