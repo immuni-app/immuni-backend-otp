@@ -64,7 +64,7 @@ To better understand how to run these microservices, see the dedicated commands 
 
 ## Code style
 
-A script is provided to maintain consistent security and quality standards in the development tools described in the Technology Description's [Backend Services Technologies](https://github.com/immuni-app/documentation/blob/master/Technology%20Description.md#backend-services-technologies) section. This solution permits keeping the checks' configuration files in the common repository.
+A script is provided to maintain consistent security and quality standards using the development tools described in the Technology Description's [Backend Services Technologies](https://github.com/immuni-app/documentation/blob/master/Technology%20Description.md#backend-services-technologies) section. This solution permits keeping the checks' configuration files in the common repository.
 
 ```bash
 poetry run checks immuni_otp
@@ -88,7 +88,7 @@ This repository adopts the [Gitflow](https://www.atlassian.com/git/tutorials/com
 
 When contributors wish to implement a new feature or a fix, they should branch from the development branch and open a pull request. Branches should have a meaningful name that adheres to the following convention:
 ```
-<type>/name_of_feature_or_fix. 
+<type>/name_of_feature_or_fix 
 ```
 The *type* prefix should be one of the following:
 
