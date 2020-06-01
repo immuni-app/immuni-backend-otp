@@ -10,6 +10,7 @@ case "$1" in
     api) poetry run gunicorn immuni_otp.sanic:sanic_app \
             --access-logfile='-' \
             --bind=${API_HOST}:${API_PORT} \
+            --logger-class=immuni_common.helpers.logging.CustomGunicornLogger \
             --max-requests=${API_WORKER_MAX_REQUESTS} \
             --workers=${API_WORKERS} \
             --worker-class=uvicorn.workers.UvicornWorker ;;
