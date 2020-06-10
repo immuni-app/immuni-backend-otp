@@ -38,7 +38,7 @@ async def test_store_success() -> None:
     expected = _OTP_DATA_SERIALIZED
     assert actual == expected
     ttl = await managers.otp_redis.ttl(key=key)
-    assert 0 < ttl <= config.OTP_KEY_EXPIRATION_SECONDS
+    assert 0 < ttl <= config.OTP_EXPIRATION_SECONDS
 
 
 async def test_store_failure_on_existent_key() -> None:

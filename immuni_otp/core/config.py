@@ -19,6 +19,6 @@ OTP_CACHE_REDIS_URL: str = config("OTP_CACHE_REDIS_URL", default="redis://localh
 OTP_CACHE_REDIS_MAX_CONNECTIONS: int = config(
     "OTP_CACHE_REDIS_MAX_CONNECTIONS", default=10, cast=int
 )
-OTP_KEY_EXPIRATION_SECONDS: int = config(
+OTP_EXPIRATION_SECONDS: int = config(
     "OTP_EXPIRATION_SECONDS", default=int(timedelta(minutes=2.5).total_seconds()), cast=int
 )
