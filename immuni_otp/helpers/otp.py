@@ -45,7 +45,7 @@ async def store(otp: str, otp_data: OtpData) -> None:
     did_set = await managers.otp_redis.set(
         key=_key_for_otp(otp),
         value=OtpDataSchema().dumps(otp_data),
-        expire=config.OTP_KEY_EXPIRATION_SECONDS,
+        expire=config.OTP_EXPIRATION_SECONDS,
         exist=StringCommandsMixin.SET_IF_NOT_EXIST,
     )
     if not did_set:
