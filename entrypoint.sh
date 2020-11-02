@@ -13,7 +13,7 @@ case "$1" in
             --logger-class=immuni_common.helpers.logging.CustomGunicornLogger \
             --max-requests=${API_WORKER_MAX_REQUESTS} \
             --workers=${API_WORKERS} \
-            --worker-class=uvicorn.workers.UvicornWorker ;;
+            --worker-class=immuni_common.uvicorn.ImmuniUvicornWorker ;;
     debug) echo "Running in debug mode ..." \
             && tail -f /dev/null ;;  # Allow entering the container to inspect the environment.
     *) echo "Received unknown command $1 (allowed: api)"
