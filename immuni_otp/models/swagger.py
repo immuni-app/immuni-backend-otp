@@ -27,10 +27,17 @@ class OtpBody:
         "Operator, the characters used in the OTP are limited to the following subset: "
         "`A, E, F, H, I, J, K, L, Q, R, S, U, W, X, Y, Z, 1, 2, 3, 4, 5, 6, 7, 8, 9`. "
         "This leads to 25^9 possible valid combinations (since the last character is computed "
-        "deterministically, based on the previous 9 characters).",
+        "deterministically, based on the previous 9 characters)."
+        "In case the user decided to use the self-unlock via app, the OTP (CUN) is encoded in "
+        "sha256 format.",
         required=True,
     )
     symptoms_started_on = doc.String(
         "The date the patient started having the first symptoms (ISO format, e.g., 2020-02-25).",
         required=True,
+    )
+    id_transaction = doc.String(
+        "The id of the transaction (available only with the self-unlock) received from HIS "
+        "service after the request.",
+        required=False,
     )

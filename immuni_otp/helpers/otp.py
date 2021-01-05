@@ -21,6 +21,7 @@ from immuni_common.models.dataclasses import OtpData
 from immuni_common.models.marshmallow.schemas import OtpDataSchema
 from immuni_otp.core import config
 from immuni_otp.core.managers import managers
+from immuni_common.models.marshmallow.validators import OTP_LENGTH
 
 
 def _key_for_otp(otp: str) -> str:
@@ -42,8 +43,12 @@ async def store(otp: str, otp_data: OtpData) -> None:
     :param otp_data: the OtpData to store.
     :raises: OtpCollision if the OTP is already in the database.
     """
+    if len(otp) == OTP_LENGTH:
+        otp_sha = _key_for_otp(otp)
+    else:
+        otp_sha = otp
     did_set = await managers.otp_redis.set(
-        key=_key_for_otp(otp),
+        key=otp_sha,
         value=OtpDataSchema().dumps(otp_data),
         expire=config.OTP_EXPIRATION_SECONDS,
         exist=StringCommandsMixin.SET_IF_NOT_EXIST,
