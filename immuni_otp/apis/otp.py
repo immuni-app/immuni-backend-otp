@@ -25,6 +25,7 @@ from immuni_common.helpers.sanic import json_response, validate
 from immuni_common.helpers.swagger import doc_exception
 from immuni_common.models.dataclasses import OtpData
 from immuni_common.models.enums import Location
+from immuni_common.models.marshmallow.validators import OTP_LENGTH
 from immuni_common.models.marshmallow.fields import IsoDate, OtpCode, IdTransaction
 from immuni_common.models.swagger import HeaderImmuniContentTypeJson
 from immuni_otp.helpers.otp import store
@@ -65,6 +66,8 @@ async def authorize_otp(request: Request, otp: str, symptoms_started_on: date, i
     :param id_transaction: the id of the transaction returned from HIS service.
     :return: 204 on OTP successfully authorized, 400 on BadRequest, 409 on OTP already authorized.
     """
-    await store(otp=otp, otp_data=OtpData(symptoms_started_on=symptoms_started_on, id_transaction=id_transaction))
+    if len(otp) > OTP_LENGTH and id_transaction is None:
+        raise SchemaValidationException
+    await store(otp=otp, otp_data=OtpData(symptoms_started_on=symptoms_started_on,
+                                          id_transaction=id_transaction))
     return json_response(body=None, status=HTTPStatus.NO_CONTENT)
-
