@@ -31,7 +31,10 @@ def _key_for_otp(otp: str) -> str:
     :param otp: the OTP whose key is to be computed.
     :return: the database key associated with the given OTP.
     """
-    otp_sha = sha256(otp.encode("utf-8")).hexdigest()
+    if len(otp) == OTP_LENGTH:
+        otp_sha = sha256(otp.encode("utf-8")).hexdigest()
+    else:
+        otp_sha = otp
     return key_for_otp_sha(otp_sha)
 
 
@@ -43,12 +46,8 @@ async def store(otp: str, otp_data: OtpData) -> None:
     :param otp_data: the OtpData to store.
     :raises: OtpCollision if the OTP is already in the database.
     """
-    if len(otp) == OTP_LENGTH:
-        otp_sha = _key_for_otp(otp)
-    else:
-        otp_sha = otp
     did_set = await managers.otp_redis.set(
-        key=otp_sha,
+        key=_key_for_otp(otp),
         value=OtpDataSchema().dumps(otp_data),
         expire=config.OTP_EXPIRATION_SECONDS,
         exist=StringCommandsMixin.SET_IF_NOT_EXIST,
