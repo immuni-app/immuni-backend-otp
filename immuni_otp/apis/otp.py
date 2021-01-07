@@ -26,7 +26,7 @@ from immuni_common.helpers.swagger import doc_exception
 from immuni_common.models.dataclasses import OtpData
 from immuni_common.models.enums import Location
 from immuni_common.models.marshmallow.validators import OTP_LENGTH
-from immuni_common.models.marshmallow.fields import IsoDate, OtpCode, IdTransaction
+from immuni_common.models.marshmallow.fields import IsoDate, OtpCode, IdTestVerification
 from immuni_common.models.swagger import HeaderImmuniContentTypeJson
 from immuni_otp.helpers.otp import store
 from immuni_otp.models.swagger import OtpBody
@@ -53,21 +53,21 @@ bp = Blueprint("otp", url_prefix="/otp")
 @doc_exception(OtpCollisionException)
 @validate(
     location=Location.JSON, otp=OtpCode(), symptoms_started_on=IsoDate(),
-    id_transaction=IdTransaction()
+    id_test_verification=IdTestVerification()
 )
 @cache(no_store=True)
-async def authorize_otp(request: Request, otp: str, symptoms_started_on: date, id_transaction: str) -> HTTPResponse:
+async def authorize_otp(request: Request, otp: str, symptoms_started_on: date, id_test_verification: str) -> HTTPResponse:
     """
     Authorize the upload of the Mobile Client’s TEKs.
 
     :param request: the HTTP request object.
     :param otp: the OTP code to authorize.
     :param symptoms_started_on: the date of the first symptoms.
-    :param id_transaction: the id of the transaction returned from HIS service.
+    :param id_test_verification: the id of the test returned from HIS service.
     :return: 204 on OTP successfully authorized, 400 on BadRequest, 409 on OTP already authorized.
     """
-    if len(otp) > OTP_LENGTH and id_transaction is None:
+    if len(otp) > OTP_LENGTH and id_test_verification is None:
         raise SchemaValidationException
     await store(otp=otp, otp_data=OtpData(symptoms_started_on=symptoms_started_on,
-                                          id_transaction=id_transaction))
+                                          id_test_verification=id_test_verification))
     return json_response(body=None, status=HTTPStatus.NO_CONTENT)

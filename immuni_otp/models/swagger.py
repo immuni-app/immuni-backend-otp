@@ -36,8 +36,8 @@ class OtpBody:
         "The date the patient started having the first symptoms (ISO format, e.g., 2020-02-25).",
         required=True,
     )
-    id_transaction = doc.String(
-        "The id of the transaction (available only with the self-unlock) received from HIS "
+    id_test_verification = doc.String(
+        "The id of the test (available only with the self-unlock) returned from HIS "
         "service after the request.",
         required=False,
     )
