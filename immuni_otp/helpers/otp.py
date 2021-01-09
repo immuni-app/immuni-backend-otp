@@ -19,9 +19,9 @@ from immuni_common.core.exceptions import OtpCollisionException
 from immuni_common.helpers.otp import key_for_otp_sha
 from immuni_common.models.dataclasses import OtpData
 from immuni_common.models.marshmallow.schemas import OtpDataSchema
+from immuni_common.models.marshmallow.validators import OTP_LENGTH
 from immuni_otp.core import config
 from immuni_otp.core.managers import managers
-from immuni_common.models.marshmallow.validators import OTP_LENGTH
 
 
 def _key_for_otp(otp: str) -> str:

@@ -14,9 +14,6 @@
 from datetime import date
 from http import HTTPStatus
 
-from sanic import Blueprint
-from sanic.request import Request
-from sanic.response import HTTPResponse
 from sanic_openapi import doc
 
 from immuni_common.core.exceptions import OtpCollisionException, SchemaValidationException
@@ -25,11 +22,14 @@ from immuni_common.helpers.sanic import json_response, validate
 from immuni_common.helpers.swagger import doc_exception
 from immuni_common.models.dataclasses import OtpData
 from immuni_common.models.enums import Location
+from immuni_common.models.marshmallow.fields import IdTestVerification, IsoDate, OtpCode
 from immuni_common.models.marshmallow.validators import OTP_LENGTH
-from immuni_common.models.marshmallow.fields import IsoDate, OtpCode, IdTestVerification
 from immuni_common.models.swagger import HeaderImmuniContentTypeJson
 from immuni_otp.helpers.otp import store
 from immuni_otp.models.swagger import OtpBody
+from sanic import Blueprint
+from sanic.request import Request
+from sanic.response import HTTPResponse
 
 bp = Blueprint("otp", url_prefix="/otp")
 
@@ -52,11 +52,15 @@ bp = Blueprint("otp", url_prefix="/otp")
 @doc_exception(SchemaValidationException)
 @doc_exception(OtpCollisionException)
 @validate(
-    location=Location.JSON, otp=OtpCode(), symptoms_started_on=IsoDate(),
-    id_test_verification=IdTestVerification()
+    location=Location.JSON,
+    otp=OtpCode(),
+    symptoms_started_on=IsoDate(),
+    id_test_verification=IdTestVerification(),
 )
 @cache(no_store=True)
-async def authorize_otp(request: Request, otp: str, symptoms_started_on: date, id_test_verification: str) -> HTTPResponse:
+async def authorize_otp(
+    request: Request, otp: str, symptoms_started_on: date, id_test_verification: str
+) -> HTTPResponse:
     """
     Authorize the upload of the Mobile Client’s TEKs.
 
@@ -68,6 +72,10 @@ async def authorize_otp(request: Request, otp: str, symptoms_started_on: date, i
     """
     if len(otp) > OTP_LENGTH and id_test_verification is None:
         raise SchemaValidationException
-    await store(otp=otp, otp_data=OtpData(symptoms_started_on=symptoms_started_on,
-                                          id_test_verification=id_test_verification))
+    await store(
+        otp=otp,
+        otp_data=OtpData(
+            symptoms_started_on=symptoms_started_on, id_test_verification=id_test_verification
+        ),
+    )
     return json_response(body=None, status=HTTPStatus.NO_CONTENT)
