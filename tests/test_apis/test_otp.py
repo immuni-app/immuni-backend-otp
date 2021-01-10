@@ -25,13 +25,24 @@ _VALID_JSON = {
     "otp": "KJ23IWY5UJ",
     "symptoms_started_on": date.today().isoformat(),
 }
+_VALID_JSON_SHA = {
+    "otp": "b39e0733843b1b5d7c558f52f117a824dc41216e0c2bb671b3d79ba82105dd94",
+    "symptoms_started_on": date.today().isoformat(),
+    "id_test_verification": "2d8af3b9-2c0a-4efc-9e15-72454f994e1f",
+}
+_INVALID_JSON = {
+    "otp": "b39e0733843b1b5d7c558f52f117a824dc41216e0c2bb671b3d79ba82105dd94",
+    "symptoms_started_on": date.today().isoformat(),
+    "id_test_verification": None,
+}
 
 CONTENT_TYPE_HEADER = {"Content-Type": "application/json; charset=utf-8"}
 
 
-async def test_otp_success(client: TestClient) -> None:
+@mark.parametrize("json_body", [_VALID_JSON, _VALID_JSON_SHA])
+async def test_otp_success(client: TestClient, json_body: dict) -> None:
     with patch("immuni_otp.apis.otp.store", autospec=True, spec_set=True) as manager_store:
-        response = await client.post(uri=_URI, json=_VALID_JSON, headers=CONTENT_TYPE_HEADER)
+        response = await client.post(uri=_URI, json=json_body, headers=CONTENT_TYPE_HEADER)
         assert response.status == HTTPStatus.NO_CONTENT.value
         assert response.headers.get("Cache-Control") == "no-store"
         assert await response.json() is None
@@ -47,9 +58,12 @@ async def test_otp_success(client: TestClient) -> None:
         for has_json in (True, False)
     ),
 )
-async def test_otp_method_not_allowed(method: str, has_json: bool, client: TestClient) -> None:
+@mark.parametrize("json_body", [_VALID_JSON, _VALID_JSON_SHA])
+async def test_otp_method_not_allowed(
+    method: str, has_json: bool, client: TestClient, json_body: dict
+) -> None:
     response = await client._request(
-        method=method, uri=_URI, json=_VALID_JSON if has_json else None, headers=CONTENT_TYPE_HEADER
+        method=method, uri=_URI, json=json_body if has_json else None, headers=CONTENT_TYPE_HEADER
     )
     assert response.status == HTTPStatus.METHOD_NOT_ALLOWED.value
 
@@ -72,14 +86,24 @@ async def test_otp_invalid_json(client: TestClient) -> None:
     }
 
 
-async def test_otp_store_failure(client: TestClient) -> None:
+@mark.parametrize("json_body", [_VALID_JSON, _VALID_JSON_SHA])
+async def test_otp_store_failure(client: TestClient, json_body: dict) -> None:
     with patch(
         "immuni_otp.apis.otp.store", side_effect=Exception(), autospec=True, spec_set=True,
     ) as manager_store:
-        response = await client.post(uri=_URI, json=_VALID_JSON, headers=CONTENT_TYPE_HEADER)
+        response = await client.post(uri=_URI, json=json_body, headers=CONTENT_TYPE_HEADER)
         assert response.status == HTTPStatus.INTERNAL_SERVER_ERROR.value
         assert await response.json() == {
             "error_code": ApiException.error_code,
             "message": ApiException.error_message,
         }
         manager_store.assert_called_once()
+
+
+async def test_otp_invalid_length(client: TestClient) -> None:
+    response = await client.post(uri=_URI, json=_INVALID_JSON, headers=CONTENT_TYPE_HEADER)
+    assert response.status == HTTPStatus.BAD_REQUEST.value
+    assert await response.json() == {
+        "error_code": SchemaValidationException.error_code,
+        "message": SchemaValidationException.error_message,
+    }

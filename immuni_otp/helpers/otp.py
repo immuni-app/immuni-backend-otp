@@ -19,6 +19,7 @@ from immuni_common.core.exceptions import OtpCollisionException
 from immuni_common.helpers.otp import key_for_otp_sha
 from immuni_common.models.dataclasses import OtpData
 from immuni_common.models.marshmallow.schemas import OtpDataSchema
+from immuni_common.models.marshmallow.validators import OTP_LENGTH
 from immuni_otp.core import config
 from immuni_otp.core.managers import managers
 
@@ -30,7 +31,10 @@ def _key_for_otp(otp: str) -> str:
     :param otp: the OTP whose key is to be computed.
     :return: the database key associated with the given OTP.
     """
-    otp_sha = sha256(otp.encode("utf-8")).hexdigest()
+    if len(otp) == OTP_LENGTH:
+        otp_sha = sha256(otp.encode("utf-8")).hexdigest()
+    else:
+        otp_sha = otp
     return key_for_otp_sha(otp_sha)
 
 
