@@ -52,7 +52,7 @@ async def test_store_success() -> None:
     await store(otp=_OTP, otp_data=_OTP_DATA)
     actual = await managers.otp_redis.get(key=key)
     expected = _OTP_DATA_SERIALIZED
-    assert actual == expected
+    assert json.loads(actual).items() == json.loads(expected).items()
     ttl = await managers.otp_redis.ttl(key=key)
     assert 0 < ttl <= config.OTP_EXPIRATION_SECONDS
 
@@ -63,7 +63,7 @@ async def test_cun_store_success() -> None:
     await store(otp=_CUN, otp_data=_CUN_DATA)
     actual = await managers.otp_redis.get(key=key)
     expected = _CUN_DATA_SERIALIZED
-    assert actual == expected
+    assert json.loads(actual).items() == json.loads(expected).items()
     ttl = await managers.otp_redis.ttl(key=key)
     assert 0 < ttl <= config.OTP_EXPIRATION_SECONDS
 
