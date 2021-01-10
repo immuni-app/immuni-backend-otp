@@ -14,6 +14,9 @@
 from datetime import date
 from http import HTTPStatus
 
+from sanic import Blueprint
+from sanic.request import Request
+from sanic.response import HTTPResponse
 from sanic_openapi import doc
 
 from immuni_common.core.exceptions import OtpCollisionException, SchemaValidationException
@@ -27,9 +30,6 @@ from immuni_common.models.marshmallow.validators import OTP_LENGTH
 from immuni_common.models.swagger import HeaderImmuniContentTypeJson
 from immuni_otp.helpers.otp import store
 from immuni_otp.models.swagger import OtpBody
-from sanic import Blueprint
-from sanic.request import Request
-from sanic.response import HTTPResponse
 
 bp = Blueprint("otp", url_prefix="/otp")
 
