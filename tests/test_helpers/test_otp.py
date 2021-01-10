@@ -27,16 +27,20 @@ from immuni_otp.helpers.otp import store
 _OTP = "59FU36KR46"
 _OTP_SHA = sha256(_OTP.encode("utf-8")).hexdigest()
 _OTP_DATA = OtpData(
-    symptoms_started_on=date(year=2020, month=12, day=10), id_test_verification=None
+    id_test_verification=None,
+    symptoms_started_on=date(year=2020, month=12, day=10),
 )
 _OTP_DATA_SERIALIZED = json.dumps(
-    {"id_test_verification": None, "symptoms_started_on": "2020-12-10",}
+    {
+        "id_test_verification": None,
+        "symptoms_started_on": "2020-12-10",
+    }
 )
 
 _CUN = "b39e0733843b1b5d7c558f52f117a824dc41216e0c2bb671b3d79ba82105dd94"
 _CUN_DATA = OtpData(
-    symptoms_started_on=date(year=2020, month=12, day=10),
     id_test_verification="2d8af3b9-2c0a-4efc-9e15-72454f994e1f",
+    symptoms_started_on=date(year=2020, month=12, day=10),
 )
 _CUN_DATA_SERIALIZED = json.dumps(
     {
